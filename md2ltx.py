@@ -104,11 +104,15 @@ def process(line):
 
 # check for Markdown linebreak
 def end_line(line):
-    size = len(line)
-    if line[size-1] == ' ' and line[size-2] == ' ':
-        line[size-1] = '\\'
-        line[size-2] = '\\'
-    return line
+    line_list = list(line)
+    size = len(line_list)
+    # print(line_list)
+    if line_list[size-1] == ' ' and line_list[size-2] == ' ':
+        # print('!!!!!!!!!!!!!!!!')
+        line_list[size-1] = '\\'
+        line_list[size-2] = '\\'
+    update = ''.join(line_list)
+    return update
 
 
 # -----------------------------------
