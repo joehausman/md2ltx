@@ -5,7 +5,7 @@ A tool that converts a Markdown file into an incomplete LaTeX file. By "incompet
 python3 md2ltx.py infile.md outfile.tex
 
 ## supported conversions
-Markdown h1 --> LaTeX section
-Markdown list item --> LaTeX list item
-Markdown emphasis --> LaTeX italics
-Markdown newline --> LaTeX newline
+Markdown h1 --> LaTeX section  
+Markdown list item --> LaTeX list item  
+Markdown emphasis --> LaTeX italics  
+Markdown newline --> LaTeX newline  
