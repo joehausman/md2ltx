@@ -1,19 +1,11 @@
-# @TODO:    headings / subheadings --> sections / subsections
-#           convert lists
-#                ordered
-#                unordered
+# @TODO:    subheadings --> subsections
 #           convert simple formatting
-#               newline
-#               italic
 #               bold
 #           ? links
 #           escape characters
 
 import sys
 
-# symbols = '#', '-', '+', '*'
-
-# IN_LIST = False
 ITEM_WARNING = False
 
 def header(line):
@@ -41,7 +33,8 @@ def listify(sub_line):
     ITEM_WARNING = True
     return sub_line
 
-
+# handle beginning-of-line Markdown
+# includes headings and list items
 def begin_line(line):
     char = '@'  # placeholder
     if len(line) > 1:
@@ -53,10 +46,6 @@ def begin_line(line):
     elif char == '-' or char == '+' or char == '*':
         # check for unordered list
         if line[1] == ' ':
-            # @TODO: make sure it isn't emphasis
-            # line = '\item ' + line[2:]
-            # global ITEM_WARNING
-            # ITEM_WARNING = True
             line = listify(line[2:])
 
     elif char.isdigit():
@@ -102,36 +91,11 @@ def process(line, pos):
             else:
                 return update
 
-
-    # i = 0
-    # update = ''
-    # for x in line:
-    #     char = x
-    #     if char == '*' or char == '_':
-    #         h = i
-    #         emchar = x
-    #         i += 1
-    #         while line[i] != emchar:
-    #             if i >= len(line):
-    #                 i = -1
-    #                 break
-    #             i += 1
-    #         # line, i = emphasis(line, i)
-    #         if i == -1:
-    #             break
-    #
-    #         emphasized = line[h+1:i-1]
-    #         update = line[:h-1] + emphasized + line[i+1:]
-    #     i += 1
-    # return update
-
 # check for Markdown linebreak
 def end_line(line):
     line_list = list(line)
     size = len(line_list)
-    # print(line_list)
     if line_list[size-1] == ' ' and line_list[size-2] == ' ':
-        # print('!!!!!!!!!!!!!!!!')
         line_list[size-1] = '\\'
         line_list[size-2] = '\\'
     update = ''.join(line_list)
@@ -154,7 +118,6 @@ latex = ''
 
 for line in markdown:
     latex = latex + begin_line(line) + '\n'
-    # latex = latex + process(line)
 
 print(latex)
 
@@ -168,8 +131,3 @@ outfile.close()
 
 if ITEM_WARNING:
     print('warning: list items created; begin and end "itemize" or "enumerate" accordingly')
-
-# s = '#thing#'
-# for ch in s:
-#     if ch == '#':
-#         print('okay')
