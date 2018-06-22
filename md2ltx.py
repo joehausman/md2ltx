@@ -63,44 +63,67 @@ def begin_line(line):
         if line[1] == '.' and line[2] == ' ':
             line = listify(line[3:])
 
-    line = process(line)
+    line = process(line, 0)
 
     return line
 
 
-def emphasis(line, i):
-    # @TODO: handle bold
-    #        handle nested bold / italic by calling process()
-    h = i
-    emchar = line[i]
-    i += 1
-    while line[i] != emchar:
-        if i >= len(line):
-            return line, -1
-        i += 1
-    # ???? = process(line[h+1:i])
-    # add the LaTeX stuff
-    before = line[:h-1]
-    inner = line[h+1:i-1]
-    after = line [i+1:]
-    print("be: '" + before + "'")
-    print("in: '" + inner + "'")
-    print("af: '" + after + "'")
-    i = len(line) - len(after)
-    line = before + '\\textit{' + inner + '}' + after
-    return line, i
+# insert LaTeX italic code
+# given line and start & end points
+def emphasis(line, i, j):
+    return line[:i] + '\\textit{' + line[i+1:j] + '}' + line[j+1:]
 
 
-def process(line):
-    i = 0
-    for x in line:
-        char = line[i]
-        if char == '*' or char == '_':
-            line, i = emphasis(line, i)
-            if i == -1:
-                break
+# find the location of the next emphasis character
+# given a string and starting position
+# return -1 if no more emphasis characters
+def next_emph_char(line, pos):
+    i = pos
+    while i < len(line):
+        if line[i] == '*':
+            return i
         i += 1
-    return line
+    return -1
+
+def process(line, pos):
+    i = next_emph_char(line, pos)
+
+    if i == -1:
+        return line
+    else: # emphasis char detected
+        j = next_emph_char(line, i+1)
+        if j == -1:
+            return line
+        else:
+            update = emphasis(line, i, j)
+            j += 7 # to account for "\textit"
+            if j < len(update):
+                return process(update, j)
+            else:
+                return update
+
+
+    # i = 0
+    # update = ''
+    # for x in line:
+    #     char = x
+    #     if char == '*' or char == '_':
+    #         h = i
+    #         emchar = x
+    #         i += 1
+    #         while line[i] != emchar:
+    #             if i >= len(line):
+    #                 i = -1
+    #                 break
+    #             i += 1
+    #         # line, i = emphasis(line, i)
+    #         if i == -1:
+    #             break
+    #
+    #         emphasized = line[h+1:i-1]
+    #         update = line[:h-1] + emphasized + line[i+1:]
+    #     i += 1
+    # return update
 
 # check for Markdown linebreak
 def end_line(line):
